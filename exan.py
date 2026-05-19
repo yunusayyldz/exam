@@ -1,379 +1,176 @@
-#-------------------------------------------------
-# 217. Contains Duplicate
-#-------------------------------------------------
+import collections
+import itertools
+from typing import Optional, List
 
-#include <vector>
-#include <unordered_set>
+# Bağlı Liste (Linked List) Düğüm Tanımı (Sistemde zaten tanımlıdır, bilgi amaçlıdır)
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 
-class Solution {
-public:
-    bool containsDuplicate(std::vector<int>& nums) {
-        std::unordered_set<int> seen;
-        for (int num : nums) {
-            if (seen.count(num) > 0) {
-                return true; 
-            }
-            seen.insert(num);
-        }
-        return false; 
-    }
-};
-
-#------------------------------------------------
-#242. Valid Anagram
-#------------------------------------------------
-
-#include <string>
-#include <vector>
-
-class Solution {
-public:
-    bool isAnagram(std::string s, std::string t) {
-        if (s.length() != t.length()) {
-            return false;
-        }
-        
-        std::vector<int> char_counts(26, 0);
-        
-        for (int i = 0; i < s.length(); ++i) {
-            char_counts[s[i] - 'a']++; 
-            char_counts[t[i] - 'a']--; 
-        }
-        
-        for (int count : char_counts) {
-            if (count != 0) {
-                return false; 
-            }
-        }
-        return true;
-    }
-};
-
-#-----------------------------------------------
-# 1. Two Sum
-#-----------------------------------------------
-
-#include <vector>
-#include <unordered_map>
-
-class Solution {
-public:
-    std::vector<int> twoSum(std::vector<int>& nums, int target) {
-        std::unordered_map<int, int> num_map;
-        
-        for (int i = 0; i < nums.size(); ++i) {
-            int complement = target - nums[i];
-            if (num_map.count(complement) > 0) {
-                return {num_map[complement], i};
-            }
-            num_map[nums[i]] = i;
-        }
-        return {}; 
-    }
-};
-
-#-----------------------------------------------
-# 303. Range Sum Query - Immutable
-#-----------------------------------------------
-
-#include <vector>
-
-class NumArray {
-private:
-    std::vector<int> prefix; 
-
-public:
-    NumArray(std::vector<int>& nums) {
-        prefix.resize(nums.size() + 1, 0);
-        for (int i = 0; i < nums.size(); ++i) {
-            prefix[i + 1] = prefix[i] + nums[i];
-        }
-    }
+class Solution:
+#-----------------------------------
+    # 1. 217. Contains Duplicate
+#-----------------------------------
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        return len(nums) != len(set(nums))
+#-----------------------------------
+    # 2. 242. Valid Anagram
+#-----------------------------------
     
-    int sumRange(int left, int right) {
-        return prefix[right + 1] - prefix[left];
-    }
-};
+    def isAnagram(self, s: str, t: str) -> bool:
+        if len(s) != len(t): return False
+        return collections.Counter(s) == collections.Counter(t)
 
-#------------------------------------------------
-# 125. Valid Palindrome
-#------------------------------------------------
-
-#include <string>
-#include <cctype> 
-
-class Solution {
-public:
-    bool isPalindrome(std::string s) {
-        int left = 0;
-        int right = s.length() - 1;
-        
-        while (left < right) {
-            while (left < right && !std::isalnum(s[left])) {
-                left++;
-            }
-            while (left < right && !std::isalnum(s[right])) {
-                right--;
-            }
-            if (std::tolower(s[left]) != std::tolower(s[right])) {
-                return false;
-            }
-            left++;
-            right--;
-        }
-        return true;
-    }
-};
-
-#----------------------------------------------------
-# 167. Two Sum II - Input Array Is Sorted
-#----------------------------------------------------
-
-#include <vector>
-#include <algorithm> 
-#include <limits>    
-
-class Solution {
-public:
-    int maxProfit(std::vector<int>& prices) {
-        int min_price = std::numeric_limits<int>::max(); 
-        int max_profit = 0;
-        
-        for (int i = 0; i < prices.size(); ++i) {
-            min_price = std::min(min_price, prices[i]);
-            max_profit = std::max(max_profit, prices[i] - min_price);
-        }
-        
-        return max_profit;
-    }
-};
-
-#------------------------------------------------
-# 121. Best Time to Buy and Sell Stock
-#-----------------------------------------------
-
-#include <vector>
-#include <algorithm> 
-#include <limits>    
-
-class Solution {
-public:
-    int maxProfit(std::vector<int>& prices) {
-        int min_price = std::numeric_limits<int>::max(); 
-        int max_profit = 0;
-        
-        for (int i = 0; i < prices.size(); ++i) {
-            min_price = std::min(min_price, prices[i]);
-            max_profit = std::max(max_profit, prices[i] - min_price);
-        }
-        
-        return max_profit;
-    }
-};
-
-#----------------------------------------------------
-# 3. Longest Substring Without Repeating Characters
-#----------------------------------------------------
-
-#include <string>
-#include <vector>
-#include <algorithm>
-
-class Solution {
-public:
-    int lengthOfLongestSubstring(std::string s) {
-        std::vector<int> char_index(128, -1);
-        int max_length = 0;
-        int left = 0; 
-        
-        for (int right = 0; right < s.length(); ++right) {
-            char current_char = s[right];
-            
-            if (char_index[current_char] >= left) {
-                left = char_index[current_char] + 1;
-            }
-            
-            char_index[current_char] = right;
-            max_length = std::max(max_length, right - left + 1);
-        }
-        
-        return max_length;
-    }
-};
-
-#------------------------------------------------------
-# 206. Reverse Linked List
-#------------------------------------------------------
-
-class Solution {
-public:
-    ListNode* reverseList(ListNode* head) {
-        ListNode* prev = nullptr;
-        ListNode* curr = head;
-        
-        while (curr != nullptr) {
-            ListNode* next_temp = curr->next;
-            curr->next = prev;
-            prev = curr;
-            curr = next_temp;
-        }
-        
-        return prev;
-    }
-};
-
-#-----------------------------------------------------
-# 21. Merge Two Sorted Lists
-#-----------------------------------------------------
-
-class Solution {
-public:
-    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
-        ListNode dummy(-1); 
-        ListNode* tail = &dummy;
-        
-        while (list1 != nullptr && list2 != nullptr) {
-            if (list1->val <= list2->val) {
-                tail->next = list1;
-                list1 = list1->next;
-            } else {
-                tail->next = list2;
-                list2 = list2->next;
-            }
-            tail = tail->next;
-        }
-        
-        if (list1 != nullptr) {
-            tail->next = list1;
-        } else {
-            tail->next = list2;
-        }
-        
-        return dummy.next;
-    }
-};
-
-#-----------------------------------------------------
-# 141. Linked List Cycle
-#-----------------------------------------------------
-
-class Solution {
-public:
-    bool hasCycle(ListNode *head) {
-        ListNode* slow = head; 
-        ListNode* fast = head; 
-        
-        while (fast != nullptr && fast->next != nullptr) {
-            slow = slow->next;
-            fast = fast->next->next;
-            
-            if (slow == fast) {
-                return true; 
-            }
-        }
-        
-        return false;
-    }
-};
-
-#-----------------------------------------------------
-# 19. Remove Nth Node From End of List
-#-----------------------------------------------------
-
-class Solution {
-public:
-    ListNode* removeNthFromEnd(ListNode* head, int n) {
-        ListNode dummy(0);
-        dummy.next = head;
-        
-        ListNode* slow = &dummy;
-        ListNode* fast = &dummy;
-        
-        for (int i = 0; i <= n; ++i) {
-            fast = fast->next;
-        }
-        
-        while (fast != nullptr) {
-            slow = slow->next;
-            fast = fast->next;
-        }
-        
-        ListNode* nodeToDelete = slow->next;
-        slow->next = slow->next->next;
-        delete nodeToDelete;
-        
-        return dummy.next;
-    }
-};
-
-#-----------------------------------------------------
-# 20. Valid Parentheses
-#-----------------------------------------------------
-
-#include <string>
-#include <stack>
-
-class Solution {
-public:
-    bool isValid(std::string s) {
-        std::stack<char> st;
-        
-        for (char c : s) {
-            if (c == '(' || c == '{' || c == '[') {
-                st.push(c);
-            } 
-            else {
-                if (st.empty()) return false;
-                
-                char top = st.top();
-                if ((c == ')' && top == '(') || 
-                    (c == '}' && top == '{') || 
-                    (c == ']' && top == '[')) {
-                    st.pop();
-                } else {
-                    return false;
-                }
-            }
-        }
-        
-        return st.empty();
-    }
-};
-
-#-----------------------------------------------------
-# 155. Min Stack
-#-----------------------------------------------------
-
-#include <stack>
-#include <algorithm>
-
-class MinStack {
-private:
-    std::stack<int> main_st;
-    std::stack<int> min_st;
-
-public:
-    MinStack() {}
+#-----------------------------------
+    # 3. 1. Two Sum
+#-----------------------------------
     
-    void push(int val) {
-        main_st.push(val);
-        if (min_st.empty() || val <= min_st.top()) {
-            min_st.push(val);
-        }
-    }
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        num_map = {}
+        for i, num in enumerate(nums):
+            if target - num in num_map:
+                return [num_map[target - num], i]
+            num_map[num] = i
+        return []
+
+    #-----------------------------------
+    # 5. 125. Valid Palindrome
+    #-----------------------------------
     
-    void pop() {
-        if (main_st.top() == min_st.top()) {
-            min_st.pop();
-        }
-        main_st.pop();
-    }
+    def isPalindrome(self, s: str) -> bool:
+        left, right = 0, len(s) - 1
+        while left < right:
+            while left < right and not s[left].isalnum(): left += 1
+            while left < right and not s[right].isalnum(): right -= 1
+            if s[left].lower() != s[right].lower(): return False
+            left += 1; right -= 1
+        return True
+
+#-----------------------------------
+    # 6. 167. Two Sum II - Input Array Is Sorted
+#-----------------------------------
+    def twoSumII(self, numbers: List[int], target: int) -> List[int]:
+        left, right = 0, len(numbers) - 1
+        while left < right:
+            curr_sum = numbers[left] + numbers[right]
+            if curr_sum == target: return [left + 1, right + 1]
+            elif curr_sum < target: left += 1
+            else: right -= 1
+        return []
+
+#-----------------------------------
+    # 7. 121. Best Time to Buy and Sell Stock
+#-----------------------------------
     
-    int top() {
-        return main_st.top();
-    }
+    def maxProfit(self, prices: List[int]) -> int:
+        min_price, max_profit = float('inf'), 0
+        for price in prices:
+            if price < min_price: min_price = price
+            elif price - min_price > max_profit: max_profit = price - min_price
+        return max_profit
+
+#-----------------------------------
+    # 8. 3. Longest Substring Without Repeating Characters
+#-----------------------------------
     
-    int getMin() {
-        return min_st.top();
-    }
-};
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        char_idx = {}
+        max_len = left = 0
+        for right, char in enumerate(s):
+            if char in char_idx and char_idx[char] >= left:
+                left = char_idx[char] + 1
+            char_idx[char] = right
+            max_len = max(max_len, right - left + 1)
+        return max_len
+
+#-----------------------------------
+    # 9. 206. Reverse Linked List
+#-----------------------------------
+    
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        prev, curr = None, head
+        while curr:
+            curr.next, prev, curr = prev, curr, curr.next
+        return prev
+
+#-----------------------------------
+    # 10. 21. Merge Two Sorted Lists
+#-----------------------------------
+    
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        dummy = tail = ListNode(-1)
+        while list1 and list2:
+            if list1.val <= list2.val:
+                tail.next, list1 = list1, list1.next
+            else:
+                tail.next, list2 = list2, list2.next
+            tail = tail.next
+        tail.next = list1 if list1 else list2
+        return dummy.next
+
+#-----------------------------------
+    # 11. 141. Linked List Cycle
+#-----------------------------------
+    
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        slow = fast = head
+        while fast and fast.next:
+            slow, fast = slow.next, fast.next.next
+            if slow is fast: return True
+        return False
+
+#-----------------------------------
+    # 12. 19. Remove Nth Node From End of List
+#-----------------------------------
+    
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        dummy = ListNode(0, head)
+        slow = fast = dummy
+        for _ in range(n + 1): fast = fast.next
+        while fast:
+            slow, fast = slow.next, fast.next
+        slow.next = slow.next.next
+        return dummy.next
+
+#-----------------------------------
+    # 13. 20. Valid Parentheses
+#-----------------------------------
+    
+    def isValid(self, s: str) -> bool:
+        stack = []
+        mapping = {')': '(', '}': '{', ']': '['}
+        for char in s:
+            if char in mapping:
+                top = stack.pop() if stack else '#'
+                if mapping[char] != top: return False
+            else:
+                stack.append(char)
+        return not stack
+
+#-----------------------------------
+# 4. 303. Range Sum Query - Immutable (Ayrı Sınıf)
+#-----------------------------------
+
+class NumArray:
+    def __init__(self, nums: List[int]):
+        self.prefix = list(itertools.accumulate(nums, initial=0))
+
+    def sumRange(self, left: int, right: int) -> int:
+        return self.prefix[right + 1] - self.prefix[left]
+
+#-----------------------------------
+# 14. 155. Min Stack (Ayrı Sınıf)
+#-----------------------------------
+
+class MinStack:
+    def __init__(self):
+        self.stack = []
+
+    def push(self, val: int) -> None:
+        curr_min = min(val, self.stack[-1][1]) if self.stack else val
+        self.stack.append((val, curr_min))
+
+    def pop(self) -> None: self.stack.pop()
+    def top(self) -> int: return self.stack[-1][0]
+    def getMin(self) -> int: return self.stack[-1][1]
